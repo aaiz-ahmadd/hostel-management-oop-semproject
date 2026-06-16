@@ -34,5 +34,9 @@ String Student::getRoomNo() {
 bool Student::operator==(Student& other) {
     return roll_no == other.roll_no;
 }
+
+String Student::getProgram(){
+    return program;
+}
  
 Student::~Student() {}

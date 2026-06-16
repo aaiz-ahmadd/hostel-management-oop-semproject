@@ -13,6 +13,7 @@ public:
     void displayInfo() override;
     String getRollNo();
     void setRoomNo(String _room_no);
+    String getProgram();
     String getRoomNo();
     bool operator==(Student& other);
     ~Student();
