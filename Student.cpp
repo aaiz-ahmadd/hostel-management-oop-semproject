@@ -38,5 +38,9 @@ bool Student::operator==(Student& other) {
 String Student::getProgram(){
     return program;
 }
+
+int Student::getYear(){
+    return year;
+}
  
 Student::~Student() {}

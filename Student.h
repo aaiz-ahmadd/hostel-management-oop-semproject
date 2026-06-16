@@ -15,6 +15,7 @@ public:
     void setRoomNo(String _room_no);
     String getProgram();
     String getRoomNo();
+    int getYear();
     bool operator==(Student& other);
     ~Student();
 };
