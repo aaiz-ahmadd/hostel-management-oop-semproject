@@ -25,27 +25,33 @@ void ComplaintManager::run() {
         displayMenu();
         cin >> choice;
         if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+        cin.ignore(10000, '\n');
         if (choice == 1) {
             String student_id, issue, date;
-            cout << "Enter Student ID: ";
+            cout << "Enter Student Roll No: ";
             cin >> student_id;
+            cin.ignore(10000, '\n');
             cout << "Enter Issue: ";
-            cin >> issue;
-            cout << "Enter Date: ";
+            issue.getline(cin, '\n');
+            cout << "Enter Date (DD/MM/YYYY): ";
             cin >> date;
+            cin.ignore(10000, '\n');
             fileComplaint(student_id, issue, date);
         } else if (choice == 2) {
             int id;
             cout << "Enter Complaint ID (starting from 1): ";
             cin >> id;
+            cin.ignore(10000, '\n');
             resolveComplaint(id - 1);
         } else if (choice == 3) {
             int id;
             String status;
             cout << "Enter Complaint ID (starting from 1): ";
             cin >> id;
-            cout << "Enter New Status: ";
+            cin.ignore(10000, '\n');
+            cout << "Enter New Status (open/in-progress/resolved): ";
             cin >> status;
+            cin.ignore(10000, '\n');
             updateStatus(id - 1, status);
         } else if (choice == 4) {
             displayOpen();
@@ -53,8 +59,9 @@ void ComplaintManager::run() {
             displayAll();
         } else if (choice == 6) {
             String student_id;
-            cout << "Enter Student ID: ";
+            cout << "Enter Student Roll No: ";
             cin >> student_id;
+            cin.ignore(10000, '\n');
             filterByStudent(student_id);
         } else if (choice == 7) {
             saveToFile();
