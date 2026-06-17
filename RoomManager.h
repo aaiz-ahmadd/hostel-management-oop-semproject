@@ -24,6 +24,7 @@ public:
     bool isAvailable(String _room_no);
     Room* getRoom(String _room_no);
     Vector<Room*>& getRooms();
+    Vector<String>& getAllocatedTo();
     ~RoomManager();
 };
  

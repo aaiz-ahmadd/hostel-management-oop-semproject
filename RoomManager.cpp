@@ -20,6 +20,7 @@ void RoomManager::run() {
     do {
         displayMenu();
         cin >> choice;
+        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
         if (choice == 1) {
             addRoom();
         } else if (choice == 2) {
@@ -72,15 +73,42 @@ void RoomManager::allocateRoom(String _room_no, Student* _student) {
         cout << "Room not found." << endl;
         return;
     }
+    if (!_student->getRoomNo().empty()) {
+        cout << "Student is already allocated to room " << _student->getRoomNo() << "." << endl;
+        return;
+    }
+    for (int i = 0; i < rooms.size(); i++) {
+        if (rooms[i]->getRoomNo() == _room_no) {
+            int parts_count = 0;
+            String* parts = allocated_to[i].split(',', parts_count);
+            for (int j = 0; j < parts_count; j++) {
+                if (parts[j] == _student->getRollNo()) {
+                    delete[] parts;
+                    cout << "Student is already allocated to this room." << endl;
+                    return;
+                }
+            }
+            delete[] parts;
+            break;
+        }
+    }
     if (!isAvailable(_room_no)) {
         cout << "Room is not available." << endl;
         return;
     }
-    r->setOccupied(true);
+    if (r->getType() == "Shared") {
+        SharedRoom* sr = (SharedRoom*)r;
+        sr->addOccupant();
+    } else {
+        r->setOccupied(true);
+    }
     _student->setRoomNo(_room_no);
     for (int i = 0; i < rooms.size(); i++) {
         if (rooms[i]->getRoomNo() == _room_no) {
-            allocated_to[i] = _student->getRollNo();
+            if (allocated_to[i].empty())
+                allocated_to[i] = _student->getRollNo();
+            else
+                allocated_to[i] = allocated_to[i] + "," + _student->getRollNo();
             break;
         }
     }
@@ -90,7 +118,13 @@ void RoomManager::allocateRoom(String _room_no, Student* _student) {
 void RoomManager::deallocateRoom(String _room_no) {
     for (int i = 0; i < rooms.size(); i++) {
         if (rooms[i]->getRoomNo() == _room_no) {
-            rooms[i]->setOccupied(false);
+            if (rooms[i]->getType() == "Shared") {
+                SharedRoom* sr = (SharedRoom*)rooms[i];
+                while (sr->getNumOccupants() > 0)
+                    sr->removeOccupant();
+            } else {
+                rooms[i]->setOccupied(false);
+            }
             allocated_to[i] = "";
             cout << "Room deallocated successfully." << endl;
             return;
@@ -157,6 +191,10 @@ Room* RoomManager::getRoom(String _room_no) {
  
 Vector<Room*>& RoomManager::getRooms() {
     return rooms;
+}
+ 
+Vector<String>& RoomManager::getAllocatedTo() {
+    return allocated_to;
 }
  
 RoomManager::~RoomManager() {
