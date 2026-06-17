@@ -18,6 +18,7 @@ public:
     void displayAll();
     void filterByStudent(String _student_id);
     void saveToFile();
+    void loadFromFile();
     ~ComplaintManager();
 };
  

@@ -14,6 +14,7 @@ void ComplaintManager::displayMenu() {
     cout << "5. Display All Complaints" << endl;
     cout << "6. Filter by Student" << endl;
     cout << "7. Save to File" << endl;
+    cout << "8. Load from File" << endl;
     cout << "0. Back" << endl;
     cout << "Enter choice: ";
 }
@@ -23,6 +24,7 @@ void ComplaintManager::run() {
     do {
         displayMenu();
         cin >> choice;
+        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
         if (choice == 1) {
             String student_id, issue, date;
             cout << "Enter Student ID: ";
@@ -34,17 +36,17 @@ void ComplaintManager::run() {
             fileComplaint(student_id, issue, date);
         } else if (choice == 2) {
             int id;
-            cout << "Enter Complaint ID: ";
+            cout << "Enter Complaint ID (starting from 1): ";
             cin >> id;
-            resolveComplaint(id);
+            resolveComplaint(id - 1);
         } else if (choice == 3) {
             int id;
             String status;
-            cout << "Enter Complaint ID: ";
+            cout << "Enter Complaint ID (starting from 1): ";
             cin >> id;
             cout << "Enter New Status: ";
             cin >> status;
-            updateStatus(id, status);
+            updateStatus(id - 1, status);
         } else if (choice == 4) {
             displayOpen();
         } else if (choice == 5) {
@@ -56,6 +58,8 @@ void ComplaintManager::run() {
             filterByStudent(student_id);
         } else if (choice == 7) {
             saveToFile();
+        } else if (choice == 8) {
+            loadFromFile();
         }
     } while (choice != 0);
 }
@@ -87,7 +91,7 @@ void ComplaintManager::displayOpen() {
     bool found = false;
     for (int i = 0; i < complaints.size(); i++) {
         if (complaints[i].getStatus() == "open") {
-            cout << "\n--- Complaint " << i << " ---" << endl;
+            cout << "\n--- Complaint " << i + 1 << " ---" << endl;
             complaints[i].display();
             found = true;
         }
@@ -102,7 +106,7 @@ void ComplaintManager::displayAll() {
         return;
     }
     for (int i = 0; i < complaints.size(); i++) {
-        cout << "\n--- Complaint " << i << " ---" << endl;
+        cout << "\n--- Complaint " << i + 1 << " ---" << endl;
         complaints[i].display();
     }
 }
@@ -111,7 +115,7 @@ void ComplaintManager::filterByStudent(String _student_id) {
     bool found = false;
     for (int i = 0; i < complaints.size(); i++) {
         if (complaints[i].getStudentId() == _student_id) {
-            cout << "\n--- Complaint " << i << " ---" << endl;
+            cout << "\n--- Complaint " << i + 1 << " ---" << endl;
             complaints[i].display();
             found = true;
         }
@@ -123,11 +127,38 @@ void ComplaintManager::filterByStudent(String _student_id) {
 void ComplaintManager::saveToFile() {
     ofstream file("complaints.txt");
     for (int i = 0; i < complaints.size(); i++) {
-        file << complaints[i].getStudentId() << "\n";
-        file << complaints[i].getStatus() << "\n";
+        file << complaints[i].getStudentId() << "\t"
+             << complaints[i].getIssue() << "\t"
+             << complaints[i].getDate() << "\t"
+             << complaints[i].getStatus() << "\n";
     }
     file.close();
     cout << "Saved to file." << endl;
 }
  
+void ComplaintManager::loadFromFile() {
+    ifstream file("complaints.txt");
+    if (!file.is_open()) {
+        cout << "File not found." << endl;
+        return;
+    }
+    complaints.clear();
+    String line;
+    while (true) {
+        line.getline(file, '\n');
+        if (line.empty())
+            break;
+        int count = 0;
+        String* parts = line.split('\t', count);
+        if (count >= 4) {
+            Complaint c(parts[0], parts[1], parts[2]);
+            c.updateStatus(parts[3]);
+            complaints.push_back(c);
+        }
+        delete[] parts;
+    }
+    file.close();
+    cout << "Loaded from file." << endl;
+}
+
 ComplaintManager::~ComplaintManager() {}

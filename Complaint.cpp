@@ -2,6 +2,13 @@
 #include <iostream>
 using namespace std;
  
+Complaint::Complaint() {
+    student_id = "";
+    issue = "";
+    date = "";
+    status = "open";
+}
+ 
 Complaint::Complaint(String _student_id, String _issue, String _date) {
     student_id = _student_id;
     issue = _issue;
@@ -28,6 +35,14 @@ String Complaint::getStudentId() {
     return student_id;
 }
  
+String Complaint::getIssue() {
+    return issue;
+}
+
+String Complaint::getDate() {
+    return date;
+}
+
 String Complaint::getStatus() {
     return status;
 }

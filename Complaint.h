@@ -9,11 +9,14 @@ class Complaint {
     String status;
     String date;
 public:
+    Complaint();
     Complaint(String _student_id, String _issue, String _date);
     void resolve();
     void updateStatus(String _status);
     void display();
     String getStudentId();
+    String getIssue();
+    String getDate();
     String getStatus();
 };
  
