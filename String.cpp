@@ -1,4 +1,5 @@
 #include "String.h"
+#include <cstdlib>
 
 int String::sizeOfArray(const char *_str) const
 {
@@ -286,6 +287,19 @@ int String::stoi() const
         num = (num * 10) + (str[i] - '0');
     }
     return num;
+}
+
+float String::stof() const
+{
+    if (empty())
+        throw invalid_argument("Error: Cannot convert an empty string to a float.");
+    int len = sizeOfArray(str);
+    char* buf = new char[len + 1];
+    for (int i = 0; i < len; i++) buf[i] = str[i];
+    buf[len] = '\0';
+    float result = (float)atof(buf);
+    delete[] buf;
+    return result;
 }
 
 String String::itos(int n)

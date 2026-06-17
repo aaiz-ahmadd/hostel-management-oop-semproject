@@ -8,7 +8,6 @@ using namespace std;
 class String
 {
     char *str;
-    char error = '\0';
 
     int sizeOfArray(const char *_str) const;
     void copyArrayToOther(const char *s, char *d);
@@ -62,6 +61,7 @@ public:
     int length();
 
     int stoi() const;
+    float stof() const;
 
     String itos(int n);
 
