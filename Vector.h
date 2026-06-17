@@ -27,7 +27,7 @@ class Vector
                 if (vec != nullptr)
                     temp[i] = vec[i];
                 else
-                    temp[i] = 0;
+                    temp[i] = T{};
             }
         }
         catch (...)

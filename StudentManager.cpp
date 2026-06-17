@@ -24,6 +24,7 @@ void StudentManager::run() {
     do {
         displayMenu();
         cin >> choice;
+        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
         if (choice == 1) {
             addStudent();
         } else if (choice == 2) {
@@ -142,13 +143,13 @@ void StudentManager::displayAll() {
 void StudentManager::saveToFile() {
     ofstream file("students.txt");
     for (int i = 0; i < students.size(); i++) {
-        file << students[i]->getName() << "\n";
-        file << students[i]->getId() << "\n";
-        file << students[i]->getPhone() << "\n";
-        file << students[i]->getRollNo() << "\n";
-        file << students[i]->getProgram() << "\n";
-        file << students[i]->getYear() << "\n";
-        file << students[i]->getRoomNo() << "\n";
+        file << students[i]->getName() << "\t"
+             << students[i]->getId() << "\t"
+             << students[i]->getPhone() << "\t"
+             << students[i]->getRollNo() << "\t"
+             << students[i]->getProgram() << "\t"
+             << students[i]->getYear() << "\t"
+             << students[i]->getRoomNo() << "\n";
     }
     file.close();
     cout << "Saved to file." << endl;
@@ -163,20 +164,19 @@ void StudentManager::loadFromFile() {
     for (int i = 0; i < students.size(); i++)
         delete students[i];
     students.clear();
-    String name, id, phone, roll_no, program, room_no, year_str;
+    String line;
     while (true) {
-        name.getline(file, '\n');
-        if (name.empty())
+        line.getline(file, '\n');
+        if (line.empty())
             break;
-        id.getline(file, '\n');
-        phone.getline(file, '\n');
-        roll_no.getline(file, '\n');
-        program.getline(file, '\n');
-        year_str.getline(file, '\n');
-        room_no.getline(file, '\n');
-        Student* s = new Student(name, id, phone, roll_no, program, year_str.stoi());
-        s->setRoomNo(room_no);
-        students.push_back(s);
+        int count = 0;
+        String* parts = line.split('\t', count);
+        if (count >= 7) {
+            Student* s = new Student(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5].stoi());
+            s->setRoomNo(parts[6]);
+            students.push_back(s);
+        }
+        delete[] parts;
     }
     file.close();
     cout << "Loaded from file." << endl;
