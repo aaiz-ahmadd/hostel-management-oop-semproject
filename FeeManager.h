@@ -12,7 +12,7 @@ public:
     FeeManager(String _name, String _code);
     void run() override;
     void displayMenu() override;
-    void generateFees(Vector<Room*>& _rooms);
+    void generateFees(Vector<Room*>& _rooms, Vector<String>& _allocated_to);
     void generateFeeForStudent(String _student_id, float _amount, String _due_date);
     void markPaid(String _student_id);
     void displayPending();
@@ -20,6 +20,7 @@ public:
     void displayByStudent(String _student_id);
     float calcTotalDue();
     void saveToFile();
+    void loadFromFile();
     ~FeeManager();
 };
  

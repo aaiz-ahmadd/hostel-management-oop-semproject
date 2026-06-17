@@ -1,6 +1,7 @@
 #include "FeeManager.h"
 #include <iostream>
 #include <fstream>
+#include <cstdlib>
 using namespace std;
  
 FeeManager::FeeManager(String _name, String _code) : HostelSystem(_name, _code) {}
@@ -14,6 +15,7 @@ void FeeManager::displayMenu() {
     cout << "5. Display Fees by Student" << endl;
     cout << "6. Calculate Total Due" << endl;
     cout << "7. Save to File" << endl;
+    cout << "8. Load from File" << endl;
     cout << "0. Back" << endl;
     cout << "Enter choice: ";
 }
@@ -23,6 +25,7 @@ void FeeManager::run() {
     do {
         displayMenu();
         cin >> choice;
+        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
         if (choice == 1) {
             String student_id, due_date;
             float amount;
@@ -51,17 +54,48 @@ void FeeManager::run() {
             cout << "Total Due: " << calcTotalDue() << endl;
         } else if (choice == 7) {
             saveToFile();
+        } else if (choice == 8) {
+            loadFromFile();
         }
     } while (choice != 0);
 }
  
-void FeeManager::generateFees(Vector<Room*>& _rooms) {
+void FeeManager::generateFees(Vector<Room*>& _rooms, Vector<String>& _allocated_to) {
+    String due_date;
+    cout << "Enter Due Date: ";
+    cin >> due_date;
+    int count = 0;
     for (int i = 0; i < _rooms.size(); i++) {
-        if (_rooms[i]->isOccupied()) {
+        if (!_allocated_to[i].empty()) {
             float amount = _rooms[i]->calcFee();
-            cout << "Fee " << amount << " generated for room " << _rooms[i]->getRoomNo() << endl;
+            int parts_count = 0;
+            String* parts = _allocated_to[i].split(',', parts_count);
+            for (int j = 0; j < parts_count; j++) {
+                if (!parts[j].empty()) {
+                    bool already_exists = false;
+                    for (int k = 0; k < fees.size(); k++) {
+                        if (fees[k].getStudentId() == parts[j] && !fees[k].isPaid()) {
+                            already_exists = true;
+                            break;
+                        }
+                    }
+                    if (already_exists) {
+                        cout << "Unpaid fee already exists for student " << parts[j] << ", skipping." << endl;
+                        continue;
+                    }
+                    fees.push_back(Fee(parts[j], amount, due_date));
+                    cout << "Fee " << amount << " generated for student " << parts[j]
+                         << " (Room " << _rooms[i]->getRoomNo() << ")" << endl;
+                    count++;
+                }
+            }
+            delete[] parts;
         }
     }
+    if (count == 0)
+        cout << "No new fees generated." << endl;
+    else
+        cout << count << " fee(s) generated successfully." << endl;
 }
  
 void FeeManager::generateFeeForStudent(String _student_id, float _amount, String _due_date) {
@@ -129,15 +163,45 @@ float FeeManager::calcTotalDue() {
 void FeeManager::saveToFile() {
     ofstream file("fees.txt");
     for (int i = 0; i < fees.size(); i++) {
-        file << fees[i].getStudentId() << "\n";
-        file << fees[i].getAmount() << "\n";
-        if (fees[i].isPaid())
-            file << "1" << "\n";
-        else
-            file << "0" << "\n";
+        file << fees[i].getStudentId() << "\t"
+             << fees[i].getAmount() << "\t"
+             << fees[i].getDueDate() << "\t"
+             << (fees[i].isPaid() ? "1" : "0") << "\n";
     }
     file.close();
     cout << "Saved to file." << endl;
 }
  
+void FeeManager::loadFromFile() {
+    ifstream file("fees.txt");
+    if (!file.is_open()) {
+        cout << "File not found." << endl;
+        return;
+    }
+    fees.clear();
+    String line;
+    while (true) {
+        line.getline(file, '\n');
+        if (line.empty())
+            break;
+        int count = 0;
+        String* parts = line.split('\t', count);
+        if (count >= 4) {
+            int len = parts[1].size();
+            char* buf = new char[len + 1];
+            for (int k = 0; k < len; k++) buf[k] = parts[1][k];
+            buf[len] = '\0';
+            float amount = (float)atof(buf);
+            delete[] buf;
+            Fee f(parts[0], amount, parts[2]);
+            if (parts[3] == "1")
+                f.markPaid();
+            fees.push_back(f);
+        }
+        delete[] parts;
+    }
+    file.close();
+    cout << "Loaded from file." << endl;
+}
+
 FeeManager::~FeeManager() {}
