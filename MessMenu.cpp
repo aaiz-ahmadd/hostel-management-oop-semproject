@@ -2,6 +2,13 @@
 #include <iostream>
 using namespace std;
  
+MessMenu::MessMenu() {
+    day = "";
+    breakfast = "Not set";
+    lunch = "Not set";
+    dinner = "Not set";
+}
+ 
 MessMenu::MessMenu(String _day) {
     day = _day;
     breakfast = "Not set";

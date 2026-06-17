@@ -9,6 +9,7 @@ class MessMenu {
     String lunch;
     String dinner;
 public:
+    MessMenu();
     MessMenu(String _day);
     void setMeal(String _type, String _item);
     String getMeal(String _type);

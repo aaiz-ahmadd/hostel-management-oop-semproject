@@ -21,6 +21,7 @@ void MessManager::run() {
     do {
         displayMenu();
         cin >> choice;
+        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
         if (choice == 1) {
             addMenu();
         } else if (choice == 2) {
@@ -75,10 +76,10 @@ void MessManager::displayWeeklyMenu() {
 void MessManager::saveToFile() {
     ofstream file("menus.txt");
     for (int i = 0; i < menus.size(); i++) {
-        file << menus[i].getDay() << "\n";
-        file << menus[i].getMeal("breakfast") << "\n";
-        file << menus[i].getMeal("lunch") << "\n";
-        file << menus[i].getMeal("dinner") << "\n";
+        file << menus[i].getDay() << "\t"
+             << menus[i].getMeal("breakfast") << "\t"
+             << menus[i].getMeal("lunch") << "\t"
+             << menus[i].getMeal("dinner") << "\n";
     }
     file.close();
     cout << "Saved to file." << endl;
@@ -91,19 +92,21 @@ void MessManager::loadFromFile() {
         return;
     }
     menus.clear();
-    String day, breakfast, lunch, dinner;
+    String line;
     while (true) {
-        day.getline(file, '\n');
-        if (day.empty())
+        line.getline(file, '\n');
+        if (line.empty())
             break;
-        breakfast.getline(file, '\n');
-        lunch.getline(file, '\n');
-        dinner.getline(file, '\n');
-        MessMenu m(day);
-        m.setMeal("breakfast", breakfast);
-        m.setMeal("lunch", lunch);
-        m.setMeal("dinner", dinner);
-        menus.push_back(m);
+        int count = 0;
+        String* parts = line.split('\t', count);
+        if (count >= 4) {
+            MessMenu m(parts[0]);
+            m.setMeal("breakfast", parts[1]);
+            m.setMeal("lunch", parts[2]);
+            m.setMeal("dinner", parts[3]);
+            menus.push_back(m);
+        }
+        delete[] parts;
     }
     file.close();
     cout << "Loaded from file." << endl;
