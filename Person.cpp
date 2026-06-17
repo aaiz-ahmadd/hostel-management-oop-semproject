@@ -20,4 +20,7 @@ String Person::getPhone() {
     return phone;
 }
  
+void Person::setName(String _name) { name = _name; }
+void Person::setPhone(String _phone) { phone = _phone; }
+
 Person::~Person() {}

@@ -13,6 +13,8 @@ public:
     String getName();
     String getId();
     String getPhone();
+    void setName(String _name);
+    void setPhone(String _phone);
     virtual ~Person();
 };
  
