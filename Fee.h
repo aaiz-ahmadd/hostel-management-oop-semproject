@@ -9,11 +9,13 @@ class Fee {
     String due_date;
     bool is_paid;
 public:
+    Fee();
     Fee(String _student_id, float _amount, String _due_date);
     void markPaid();
     void display();
     String getStudentId();
     float getAmount();
+    String getDueDate();
     bool isPaid();
 };
  

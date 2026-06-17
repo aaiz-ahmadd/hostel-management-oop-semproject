@@ -2,6 +2,13 @@
 #include <iostream>
 using namespace std;
  
+Fee::Fee() {
+    student_id = "";
+    amount = 0;
+    due_date = "";
+    is_paid = false;
+}
+ 
 Fee::Fee(String _student_id, float _amount, String _due_date) {
     student_id = _student_id;
     amount = _amount;
@@ -25,6 +32,10 @@ void Fee::display() {
  
 String Fee::getStudentId() {
     return student_id;
+}
+
+String Fee::getDueDate() {
+    return due_date;
 }
  
 float Fee::getAmount() {
