@@ -1,16 +1,19 @@
 #include "RoomManager.h"
 #include <iostream>
+#include <fstream>
 using namespace std;
  
 RoomManager::RoomManager(String _name, String _code) : HostelSystem(_name, _code) {}
  
 void RoomManager::displayMenu() {
-    cout << "=== Room Manager ===" << endl;
+    cout << "\n=== Room Manager ===" << endl;
     cout << "1. Add Room" << endl;
     cout << "2. Deallocate Room" << endl;
     cout << "3. Display All Rooms" << endl;
     cout << "4. Display Available Rooms" << endl;
     cout << "5. Display Occupied Rooms" << endl;
+    cout << "6. Save to File" << endl;
+    cout << "7. Load from File" << endl;
     cout << "0. Back" << endl;
     cout << "Enter choice: ";
 }
@@ -21,12 +24,14 @@ void RoomManager::run() {
         displayMenu();
         cin >> choice;
         if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+        cin.ignore(10000, '\n');
         if (choice == 1) {
             addRoom();
         } else if (choice == 2) {
             String room_no;
             cout << "Enter Room No: ";
             cin >> room_no;
+            cin.ignore(10000, '\n');
             deallocateRoom(room_no);
         } else if (choice == 3) {
             displayRooms();
@@ -34,6 +39,10 @@ void RoomManager::run() {
             displayAvailable();
         } else if (choice == 5) {
             displayOccupied();
+        } else if (choice == 6) {
+            saveToFile();
+        } else if (choice == 7) {
+            loadFromFile();
         }
     } while (choice != 0);
 }
@@ -47,20 +56,35 @@ void RoomManager::addRoom() {
     cin >> room_no;
     if (type == 1) {
         float rate;
-        String amenities;
         cout << "Enter Monthly Rate: ";
         cin >> rate;
-        cout << "Enter Amenities: ";
-        cin >> amenities;
-        rooms.push_back(new SingleRoom(room_no, rate, amenities));
+        while (cin.fail() || rate <= 0) {
+            cin.clear(); cin.ignore(10000, '\n');
+            cout << "Invalid rate. Enter a positive value: ";
+            cin >> rate;
+        }
+        cin.ignore(10000, '\n');
+        rooms.push_back(new SingleRoom(room_no, rate));
         allocated_to.push_back("");
     } else {
         int capacity;
         float total_rate;
-        cout << "Enter Capacity: ";
+        cout << "Enter Capacity (min 2): ";
         cin >> capacity;
+        while (cin.fail() || capacity < 2) {
+            cin.clear(); cin.ignore(10000, '\n');
+            cout << "Invalid capacity. Enter 2 or more: ";
+            cin >> capacity;
+        }
+        cin.ignore(10000, '\n');
         cout << "Enter Total Rate: ";
         cin >> total_rate;
+        while (cin.fail() || total_rate <= 0) {
+            cin.clear(); cin.ignore(10000, '\n');
+            cout << "Invalid rate. Enter a positive value: ";
+            cin >> total_rate;
+        }
+        cin.ignore(10000, '\n');
         rooms.push_back(new SharedRoom(room_no, capacity, total_rate));
         allocated_to.push_back("");
     }
@@ -197,6 +221,71 @@ Vector<String>& RoomManager::getAllocatedTo() {
     return allocated_to;
 }
  
+void RoomManager::saveToFile() {
+    ofstream file("rooms.txt");
+    for (int i = 0; i < rooms.size(); i++) {
+        int occupants = 0;
+        float rate = 0;
+        if (rooms[i]->getType() == "Single") {
+            SingleRoom* sr = (SingleRoom*)rooms[i];
+            rate = sr->getRate();
+            occupants = rooms[i]->isOccupied() ? 1 : 0;
+        } else {
+            SharedRoom* sr = (SharedRoom*)rooms[i];
+            rate = sr->getRate();
+            occupants = sr->getNumOccupants();
+        }
+        file << rooms[i]->getType() << "\t"
+             << rooms[i]->getRoomNo() << "\t"
+             << rate << "\t"
+             << rooms[i]->getCapacity() << "\t"
+             << occupants << "\t"
+             << allocated_to[i] << "\n";
+    }
+    file.close();
+    cout << "Saved to file." << endl;
+}
+
+void RoomManager::loadFromFile() {
+    ifstream file("rooms.txt");
+    if (!file.is_open()) {
+        cout << "File not found." << endl;
+        return;
+    }
+    for (int i = 0; i < rooms.size(); i++)
+        delete rooms[i];
+    rooms.clear();
+    allocated_to.clear();
+    String line;
+    while (true) {
+        line.getline(file, '\n');
+        if (line.empty()) break;
+        int count = 0;
+        String* parts = line.split('\t', count);
+        if (count >= 6) {
+            String type     = parts[0];
+            String room_no  = parts[1];
+            float  rate     = parts[2].stof();
+            int    capacity = parts[3].stoi();
+            int    occupants = parts[4].stoi();
+            String alloc    = parts[5];
+            if (type == "Single") {
+                SingleRoom* sr = new SingleRoom(room_no, rate);
+                if (occupants > 0) sr->setOccupied(true);
+                rooms.push_back(sr);
+            } else {
+                SharedRoom* sr = new SharedRoom(room_no, capacity, rate);
+                for (int j = 0; j < occupants; j++) sr->addOccupant();
+                rooms.push_back(sr);
+            }
+            allocated_to.push_back(alloc);
+        }
+        delete[] parts;
+    }
+    file.close();
+    cout << "Loaded from file." << endl;
+}
+
 RoomManager::~RoomManager() {
     for (int i = 0; i < rooms.size(); i++)
         delete rooms[i];
