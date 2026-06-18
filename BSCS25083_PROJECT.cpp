@@ -44,7 +44,8 @@ int main() {
         cout << "0. Exit" << endl;
         cout << "Enter choice: ";
         cin >> choice;
-        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+
+        cin.ignore(10000, '\n');
 
         if (choice >= 1 && choice <= 5) {
             sys[choice - 1]->run();
@@ -52,8 +53,10 @@ int main() {
             String roll_no, room_no;
             cout << "Enter Student Roll No: ";
             cin >> roll_no;
+            cin.ignore(10000, '\n');
             cout << "Enter Room No: ";
             cin >> room_no;
+            cin.ignore(10000, '\n');
             Student* s = sm->searchStudent(roll_no);
             if (s == nullptr)
                 cout << "Student not found." << endl;
