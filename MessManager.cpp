@@ -22,16 +22,19 @@ void MessManager::run() {
         displayMenu();
         cin >> choice;
         if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+        cin.ignore(10000, '\n');
         if (choice == 1) {
             addMenu();
         } else if (choice == 2) {
             String day, type, item;
             cout << "Enter Day: ";
             cin >> day;
+            cin.ignore(10000, '\n');
             cout << "Enter Type (breakfast/lunch/dinner): ";
             cin >> type;
+            cin.ignore(10000, '\n');
             cout << "Enter Item: ";
-            cin >> item;
+            item.getline(cin, '\n');
             updateMenu(day, type, item);
         } else if (choice == 3) {
             displayWeeklyMenu();

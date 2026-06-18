@@ -1,7 +1,6 @@
 #include "FeeManager.h"
 #include <iostream>
 #include <fstream>
-#include <cstdlib>
 using namespace std;
  
 FeeManager::FeeManager(String _name, String _code) : HostelSystem(_name, _code) {}
@@ -25,31 +24,48 @@ void FeeManager::run() {
     do {
         displayMenu();
         cin >> choice;
-        if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+        if (cin.fail()) { 
+            cin.clear(); 
+            cin.ignore(10000, '\n'); 
+            choice = -1; 
+            continue; 
+        }
+        cin.ignore(10000, '\n');
         if (choice == 1) {
-            String student_id, due_date;
+            String roll_no, due_date;
             float amount;
-            cout << "Enter Student ID: ";
-            cin >> student_id;
+            cout << "Enter Student Roll No: ";
+            cin >> roll_no;
+            cin.ignore(10000, '\n');
             cout << "Enter Amount: ";
             cin >> amount;
-            cout << "Enter Due Date: ";
+            while (cin.fail() || amount <= 0) {
+                cin.clear(); 
+                cin.ignore(10000, '\n');
+                cout << "Invalid amount. Enter a positive value: ";
+                cin >> amount;
+            }
+            cin.ignore(10000, '\n');
+            cout << "Enter Due Date (DD/MM/YYYY): ";
             cin >> due_date;
-            generateFeeForStudent(student_id, amount, due_date);
+            cin.ignore(10000, '\n');
+            generateFeeForStudent(roll_no, amount, due_date);
         } else if (choice == 2) {
-            String student_id;
-            cout << "Enter Student ID: ";
-            cin >> student_id;
-            markPaid(student_id);
+            String roll_no;
+            cout << "Enter Student Roll No: ";
+            cin >> roll_no;
+            cin.ignore(10000, '\n');
+            markPaid(roll_no);
         } else if (choice == 3) {
             displayAll();
         } else if (choice == 4) {
             displayPending();
         } else if (choice == 5) {
-            String student_id;
-            cout << "Enter Student ID: ";
-            cin >> student_id;
-            displayByStudent(student_id);
+            String roll_no;
+            cout << "Enter Student Roll No: ";
+            cin >> roll_no;
+            cin.ignore(10000, '\n');
+            displayByStudent(roll_no);
         } else if (choice == 6) {
             cout << "Total Due: " << calcTotalDue() << endl;
         } else if (choice == 7) {
@@ -187,13 +203,7 @@ void FeeManager::loadFromFile() {
         int count = 0;
         String* parts = line.split('\t', count);
         if (count >= 4) {
-            int len = parts[1].size();
-            char* buf = new char[len + 1];
-            for (int k = 0; k < len; k++) buf[k] = parts[1][k];
-            buf[len] = '\0';
-            float amount = (float)atof(buf);
-            delete[] buf;
-            Fee f(parts[0], amount, parts[2]);
+            Fee f(parts[0], parts[1].stof(), parts[2]);
             if (parts[3] == "1")
                 f.markPaid();
             fees.push_back(f);
