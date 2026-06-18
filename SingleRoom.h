@@ -5,9 +5,8 @@
  
 class SingleRoom : public Room {
     float monthly_rate;
-    String amenities;
 public:
-    SingleRoom(String _room_no, float _monthly_rate, String _amenities);
+    SingleRoom(String _room_no, float _monthly_rate);
     float calcFee() override;
     String getType() override;
     void displayInfo() override;
