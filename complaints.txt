@@ -1,0 +1,3 @@
+BSCS001	Water leak in bathroom	17/06/2025	resolved
+BSCS002	Electricity issue in room 5	17/06/2025	in-progress
+BSCS001	Broken window latch	18/06/2025	open
