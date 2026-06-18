@@ -42,5 +42,10 @@ String Student::getProgram(){
 int Student::getYear(){
     return year;
 }
+
+void Student::setName(String _name) { Person::setName(_name); }
+void Student::setPhone(String _phone) { Person::setPhone(_phone); }
+void Student::setProgram(String _program) { program = _program; }
+void Student::setYear(int _year) { year = _year; }
  
 Student::~Student() {}

@@ -13,6 +13,10 @@ public:
     void displayInfo() override;
     String getRollNo();
     void setRoomNo(String _room_no);
+    void setName(String _name);
+    void setPhone(String _phone);
+    void setProgram(String _program);
+    void setYear(int _year);
     String getProgram();
     String getRoomNo();
     int getYear();
