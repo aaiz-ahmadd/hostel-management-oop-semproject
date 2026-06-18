@@ -25,17 +25,20 @@ void StudentManager::run() {
         displayMenu();
         cin >> choice;
         if (cin.fail()) { cin.clear(); cin.ignore(10000, '\n'); choice = -1; continue; }
+        cin.ignore(10000, '\n');
         if (choice == 1) {
             addStudent();
         } else if (choice == 2) {
             String roll_no;
             cout << "Enter Roll No: ";
             cin >> roll_no;
+            cin.ignore(10000, '\n');
             removeStudent(roll_no);
         } else if (choice == 3) {
             String roll_no;
             cout << "Enter Roll No: ";
             cin >> roll_no;
+            cin.ignore(10000, '\n');
             Student* s = searchStudent(roll_no);
             if (s != nullptr)
                 s->displayInfo();
@@ -45,6 +48,7 @@ void StudentManager::run() {
             String roll_no;
             cout << "Enter Roll No: ";
             cin >> roll_no;
+            cin.ignore(10000, '\n');
             updateStudent(roll_no);
         } else if (choice == 5) {
             sortStudents();
@@ -62,17 +66,27 @@ void StudentManager::addStudent() {
     String name, id, phone, roll_no, program;
     int year;
     cout << "Enter Name: ";
-    cin >> name;
+    name.getline(cin, '\n');
     cout << "Enter ID: ";
     cin >> id;
+    cin.ignore(10000, '\n');
     cout << "Enter Phone: ";
     cin >> phone;
+    cin.ignore(10000, '\n');
     cout << "Enter Roll No: ";
     cin >> roll_no;
+    cin.ignore(10000, '\n');
     cout << "Enter Program: ";
     cin >> program;
+    cin.ignore(10000, '\n');
     cout << "Enter Year: ";
     cin >> year;
+    while (cin.fail() || year < 1) {
+        cin.clear(); cin.ignore(10000, '\n');
+        cout << "Invalid year. Enter a positive year: ";
+        cin >> year;
+    }
+    cin.ignore(10000, '\n');
     students.push_back(new Student(name, id, phone, roll_no, program, year));
     cout << "Student added successfully." << endl;
 }
@@ -103,15 +117,48 @@ void StudentManager::updateStudent(String _roll_no) {
         cout << "Student not found." << endl;
         return;
     }
+    cout << "\n--- Current Info ---" << endl;
+    s->displayInfo();
     int choice;
-    cout << "1. Update Room No" << endl;
+    cout << "\n1. Update Name" << endl;
+    cout << "2. Update Phone" << endl;
+    cout << "3. Update Program" << endl;
+    cout << "4. Update Year" << endl;
+    cout << "0. Cancel" << endl;
     cout << "Enter choice: ";
     cin >> choice;
+    cin.ignore(10000, '\n');
     if (choice == 1) {
-        String room_no;
-        cout << "Enter new Room No: ";
-        cin >> room_no;
-        s->setRoomNo(room_no);
+        String name;
+        cout << "Enter new Name: ";
+        name.getline(cin, '\n');
+        s->setName(name);
+        cout << "Updated successfully." << endl;
+    } else if (choice == 2) {
+        String phone;
+        cout << "Enter new Phone: ";
+        cin >> phone;
+        cin.ignore(10000, '\n');
+        s->setPhone(phone);
+        cout << "Updated successfully." << endl;
+    } else if (choice == 3) {
+        String program;
+        cout << "Enter new Program: ";
+        cin >> program;
+        cin.ignore(10000, '\n');
+        s->setProgram(program);
+        cout << "Updated successfully." << endl;
+    } else if (choice == 4) {
+        int year;
+        cout << "Enter new Year: ";
+        cin >> year;
+        while (cin.fail() || year < 1) {
+            cin.clear(); cin.ignore(10000, '\n');
+            cout << "Invalid year. Enter a positive year: ";
+            cin >> year;
+        }
+        cin.ignore(10000, '\n');
+        s->setYear(year);
         cout << "Updated successfully." << endl;
     }
 }
