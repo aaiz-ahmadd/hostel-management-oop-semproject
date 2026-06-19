@@ -229,7 +229,10 @@ void RoomManager::saveToFile() {
         if (rooms[i]->getType() == "Single") {
             SingleRoom* sr = (SingleRoom*)rooms[i];
             rate = sr->getRate();
-            occupants = rooms[i]->isOccupied() ? 1 : 0;
+            if(rooms[i]->isOccupied())
+                occupants = 1;
+            else
+                occupants = 0;
         } else {
             SharedRoom* sr = (SharedRoom*)rooms[i];
             rate = sr->getRate();
