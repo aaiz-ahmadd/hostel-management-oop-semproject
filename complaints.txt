@@ -1,3 +1,6 @@
-BSCS001	Water leak in bathroom	17/06/2025	resolved
-BSCS002	Electricity issue in room 5	17/06/2025	in-progress
-BSCS001	Broken window latch	18/06/2025	open
+BSCS25001	Water leakage in bathroom	01/06/2025	open
+BSCS25002	Fan not working in room	02/06/2025	open
+BSCS25003	Broken window in hostel block	03/06/2025	in-progress
+BSCS25004	No hot water supply	04/06/2025	open
+BSCS25005	Door lock is broken	05/06/2025	resolved
+BSCS25006	Electricity fluctuation in room	06/06/2025	open

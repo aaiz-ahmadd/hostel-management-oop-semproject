@@ -21,7 +21,7 @@ void Fee::markPaid() {
 }
  
 void Fee::display() {
-    cout << "Student ID: " << student_id << endl;
+    cout << "Roll No: " << student_id << endl;
     cout << "Amount: " << amount << endl;
     cout << "Due Date: " << due_date << endl;
     if (is_paid)
