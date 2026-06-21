@@ -1,7 +1,0 @@
-Monday	Paratha and Chai	Chicken Biryani	Daal Roti
-Tuesday	Boiled Eggs and Toast	Vegetable Pulao	Nihari with Naan
-Wednesday	Halwa Puri	Aloo Qeema Karahi	Daal Chawal
-Thursday	Cornflakes with Milk	Chicken Karahi	Saag with Roti
-Friday	French Toast	Special Biryani	Mutton Karahi
-Saturday	Omelette with Bread	Pasta with Sauce	Chicken Corn Soup
-Sunday	Paratha and Omelette	Chicken Fried Rice	BBQ Platter
