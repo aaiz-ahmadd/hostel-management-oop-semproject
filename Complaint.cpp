@@ -25,7 +25,7 @@ void Complaint::updateStatus(String _status) {
 }
  
 void Complaint::display() {
-    cout << "Student ID: " << student_id << endl;
+    cout << "Roll No: " << student_id << endl;
     cout << "Issue: " << issue << endl;
     cout << "Date: " << date << endl;
     cout << "Status: " << status << endl;

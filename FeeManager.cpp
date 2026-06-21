@@ -132,34 +132,36 @@ void FeeManager::markPaid(String _student_id) {
  
 void FeeManager::displayPending() {
     bool found = false;
+    int count = 0;
     for (int i = 0; i < fees.size(); i++) {
         if (!fees[i].isPaid()) {
+            cout << "\n--- Fee " << ++count << " ---" << endl;
             fees[i].display();
-            cout << "---" << endl;
             found = true;
         }
     }
     if (!found)
         cout << "No pending fees." << endl;
 }
- 
+
 void FeeManager::displayAll() {
     if (fees.size() == 0) {
         cout << "No fees found." << endl;
         return;
     }
     for (int i = 0; i < fees.size(); i++) {
+        cout << "\n--- Fee " << i + 1 << " ---" << endl;
         fees[i].display();
-        cout << "---" << endl;
     }
 }
- 
+
 void FeeManager::displayByStudent(String _student_id) {
     bool found = false;
+    int count = 0;
     for (int i = 0; i < fees.size(); i++) {
         if (fees[i].getStudentId() == _student_id) {
+            cout << "\n--- Fee " << ++count << " ---" << endl;
             fees[i].display();
-            cout << "---" << endl;
             found = true;
         }
     }

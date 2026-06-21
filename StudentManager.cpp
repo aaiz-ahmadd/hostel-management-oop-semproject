@@ -6,7 +6,7 @@ using namespace std;
 StudentManager::StudentManager(String _name, String _code) : HostelSystem(_name, _code) {}
  
 void StudentManager::displayMenu() {
-    cout << "=== Student Manager ===" << endl;
+    cout << "\n=== Student Manager ===" << endl;
     cout << "1. Add Student" << endl;
     cout << "2. Remove Student" << endl;
     cout << "3. Search Student" << endl;
@@ -15,7 +15,7 @@ void StudentManager::displayMenu() {
     cout << "6. Display All" << endl;
     cout << "7. Save to File" << endl;
     cout << "8. Load from File" << endl;
-    cout << "0. Exit" << endl;
+    cout << "0. Back" << endl;
     cout << "Enter choice: ";
 }
  
